@@ -1,0 +1,91 @@
+*** galan/src/sheet.c	Sat Aug 31 13:44:30 2002
+--- galan-doxygen/src/sheet.c	Sat Sep  7 11:03:10 2002
+*************** PRIVATE void scroll_follow_mouse(Sheet *
+*** 118,123 ****
+--- 118,128 ----
+    sheet->saved_y = va->value + me->y_root;
+  }
+  
++ /* ! Finds the first component in a sheet at the specified location
++  * \return the found component, NULL if there is none
++  * \param x horizontal location in pixels
++  * \param y vertical location in pixels
++  */
+  PRIVATE Component *find_component_at(Sheet *sheet, gint x, gint y) {
+    GList *lst = sheet->components;
+  
+*************** PRIVATE Component *find_component_at(She
+*** 133,138 ****
+--- 138,148 ----
+    return NULL;
+  }
+  
++ /* ! Finds all components in a sheet at the specified location
++  * \return a GList* of the found components, NULL if there are none
++  * \param x horizontal location in pixels
++  * \param y vertical location in pixels
++  */
+  PRIVATE GList *find_components_at(Sheet *sheet, gint x, gint y) {
+    GList *lst = sheet->components;
+    GList *accum = NULL;
+*************** PUBLIC void sheet_kill_refs( Sheet *s ) 
+*** 556,562 ****
+      s->referring_sheets = NULL;
+  }
+  
+! /*! handle mouse motion events to display port names */
+  static gint motion_notify_event(GtkWidget *widget, GdkEventMotion *event,
+  		gpointer func_data)
+  {
+--- 566,576 ----
+      s->referring_sheets = NULL;
+  }
+  
+! /*! handle mouse motion events to display port names in the status bar
+!  * \param func_data the relevant Sheet*
+!  * \return always returns FALSE so that the event is passed on the other
+!  * event handlers (TRUE means stop event handling here).
+!  */
+  static gint motion_notify_event(GtkWidget *widget, GdkEventMotion *event,
+  		gpointer func_data)
+  {
+*************** static gint motion_notify_event(GtkWidge
+*** 596,601 ****
+--- 610,620 ----
+     return FALSE;
+  }
+  
++ /*! Sheet constructor
++  * This allocates memory for a new sheet, set's it's name, create widgets,
++  * attaches event handlers and returns a pointer the new Sheet.
++  * \todo glib-ify
++  */
+  PUBLIC Sheet *create_sheet( void ) {
+    GtkWidget *eb;
+    GdkColormap *colormap;
+*************** PUBLIC Sheet *create_sheet( void ) {
+*** 621,631 ****
+    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sheet->scrollwin), eb);
+  
+    sheet->drawingwidget = gtk_drawing_area_new();
+!   // connect mouse motion event handler
+    gtk_signal_connect( GTK_OBJECT(sheet->drawingwidget),
+  	"motion_notify_event", (GtkSignalFunc)motion_notify_event, sheet);
+  
+!   // unmask motion events so handler gets called
+    gtk_widget_set_events(sheet->drawingwidget, GDK_EXPOSURE_MASK
+  	| GDK_LEAVE_NOTIFY_MASK
+  	| GDK_POINTER_MOTION_MASK
+--- 640,651 ----
+    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sheet->scrollwin), eb);
+  
+    sheet->drawingwidget = gtk_drawing_area_new();
+! 
+!   /* connect mouse motion event handler */
+    gtk_signal_connect( GTK_OBJECT(sheet->drawingwidget),
+  	"motion_notify_event", (GtkSignalFunc)motion_notify_event, sheet);
+  
+!   /* unmask motion events so handler gets called */
+    gtk_widget_set_events(sheet->drawingwidget, GDK_EXPOSURE_MASK
+  	| GDK_LEAVE_NOTIFY_MASK
+  	| GDK_POINTER_MOTION_MASK

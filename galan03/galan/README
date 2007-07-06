@@ -1,0 +1,67 @@
+
+This is gAlan, an audio-processing program for X-windows (or platforms
+that support GTK+). gAlan is distributed under the GNU General Public
+License - for more information please see the COPYING file in this
+directory.
+
+---------------------------------------------------------------------------
+NOTE: As a special exception, gAlan plugins are *not* required to be
+licensed under the GPL. The writer gets to choose a license for each
+plugin he/she writes. So if any third party vendor wants to distribute
+a plugin for gAlan with a different license, that's fine - and if
+they're a little touchy about their source-code, they're welcome to
+distribute the plugin as a binary only.
+
+However, please do consider releasing your plugin under the GPL. Each
+such open-sourced plugin makes the whole project just that little bit
+stronger.
+---------------------------------------------------------------------------
+
+Please see the INSTALL file for installation instructions - it should
+be sufficient to type
+
+	$ ./configure
+	$ make
+		(and then as root)
+	# make install
+
+You will need GTK+ v2.x and a properly-configured OSS/ALSA compatible soundcard
+capable of 44.1kHz 16-bit stereo output. A fast CPU is also recommended.
+
+the gAlan 0.3 branch is jackified and autodetects a jack installation.
+
+gAlan tries to autodetect various libraries and builds plugins for these:
+
+- jack
+- alsa
+- libsndfile
+- gtkglarea (seems to be working in 0.3)
+- libvorbis
+- liblrdf
+- fst (windows vst plugins)
+
+if you have an SB Live you can try ./configure --enable-emu10k1
+which should build the emu components.
+
+with these you can route signals in the DSP...
+
+
+
+For further information, tutorials, and user- and developer-guides, please see
+the doc/ subdirectory and the main gAlan website,
+
+	http://galan.sourceforge.net/
+
+Good luck!
+
+	Tony Garnock-Jones
+	surazal@ihug.co.nz
+	30 August 1999
+
+gAlan is now maintained by 
+
+	Torben Hohn
+	torbenh@users.sourceforge.net
+   
+so if you have questions especially because i am
+to lazy to write the documentation drop me a mail... 

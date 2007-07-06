@@ -1,0 +1,2132 @@
+? .cvsignore
+? .xvpics
+? Makefile
+? Makefile.in
+? Univibe.dll
+? Univibe.fst
+? anti-aliased-knobs.png
+? autom4te-2.53a.cache
+? autom4te.cache
+? bla.wav
+? bla02.wav
+? canvascontroltest.c
+? config.h
+? config.h.in
+? config.log
+? config.status
+? configure
+? core.18204
+? core.19365
+? core.26472
+? cscope.out
+? diffs.diff
+? fw-lib
+? galan
+? galan.spec
+? galan.trace
+? laber
+? libtool
+? mbeq03.gsheet
+? ogg_ra-fix.patch
+? sheet.c.patch
+? stamp-h
+? stamp-h.in
+? stamp-h1
+? toggle1.png
+? wwus
+? doc/Doxyfile
+? include/galan_jack.h
+? include/galan_lash.h
+? pixmaps/.xvpics
+? pixmaps/Makefile
+? pixmaps/Makefile.in
+? pixmaps/corner-widget.png
+? pixmaps/diode2.gif
+? pixmaps/galan-bg-ref.png
+? pixmaps/mbeq-bg.png
+? pixmaps/mbeq-bg.xcf
+? pixmaps/new-knob.xcf
+? pixmaps/new-knob02.png
+? pixmaps/new-knob02.xcf
+? pixmaps/nicks-siren.png
+? pixmaps/scale+off.png
+? plugins/.cvsignore
+? plugins/.sndfile_in.so.c.swp
+? plugins/AEffect.h
+? plugins/alsa_out.la
+? plugins/alsa_out.la.loT
+? plugins/alsa_out_callback.la
+? plugins/fst.la
+? plugins/vst.la
+? plugins/gl/.deps
+? plugins/gl/.gldisplay.c.swp
+? plugins/gl/Makefile
+? plugins/gl/Makefile.in
+? sheets/Makefile
+? sheets/Makefile.in
+? sheets/controllers
+? sheets/seq-voices
+? sheets/complex/Makefile
+? sheets/complex/Makefile.in
+? sheets/drums/Makefile
+? sheets/drums/Makefile.in
+? sheets/experiments/Makefile
+? sheets/experiments/Makefile.in
+? sheets/experiments/jack-delay.gsheet
+? sheets/experiments/jack-delay02.gsheet
+? sheets/experiments/vocoderinput01.gsheet
+? sheets/experiments/vocoderinput02.gsheet
+? sheets/experiments/vocoderinput03.gsheet
+? sheets/experiments/vocoderinput04.gsheet
+? sheets/experiments/vocoderinput05.gsheet
+? sheets/experiments/vocodermod01.gsheet
+? sheets/experiments/vocodermod02.gsheet
+? sheets/fx/Makefile
+? sheets/fx/Makefile.in
+? sheets/fx/mbeq01.galan
+? sheets/fx/mbeq02.gsheet
+? sheets/misc/Makefile
+? sheets/misc/Makefile.in
+? sheets/misc/adsr.gsheet
+? sheets/misc/adsr02.gsheet
+? sheets/misc/midi-triggerseq01.gsheet
+? sheets/misc/param-map.gsheet
+? sheets/misc/sampler02.gsheet
+? sheets/misc/trigger_array01.gsheet
+? sheets/voices/Makefile
+? sheets/voices/Makefile.in
+? sheets/voices/poly-beep-onevoice.gsheet
+? sheets/voices/poly-beep01.gsheet
+? sheets/voices/sirene02.gsheet
+? src/.deps
+? src/.sheet.c.swp
+? src/Makefile
+? src/Makefile.in
+Index: README
+===================================================================
+RCS file: /cvsroot/galan/galan/README,v
+retrieving revision 1.4
+diff -r1.4 README
+38c38
+< - gtkglarea (not working in 0.3)
+---
+> - gtkglarea (seems to be working in 0.3)
+40a41
+> - fst (windows vst plugins)
+Index: configure.ac
+===================================================================
+RCS file: /cvsroot/galan/galan/configure.ac,v
+retrieving revision 1.12
+diff -r1.12 configure.ac
+2c2
+< AC_INIT(galan, 0.3.0_beta5, torbenh@users.sourceforge.net)
+---
+> AC_INIT(galan, 0.3.0_beta8, torbenh@users.sourceforge.net)
+37c37
+< AC_CHECK_HEADERS(sys/soundcard.h, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} oss_output.la oss_input.la")
+---
+> AC_CHECK_HEADERS(sys/soundcard.h, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} joyport.la oss_output.la oss_input.la midi_seq_clock.la midiclock.la")
+39,43c39
+< AC_CHECK_HEADERS(drfftw.h, [ OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} fft.la ifft.la"
+< 			       FFTW_WITH_PREFIX="yes"
+< 			       FFTW_LIBS="-ldrfftw -ldfftw"
+<                                AC_SUBST(FFTW_LIBS)
+<                                AC_DEFINE( FFTW_PREFIX, 1, "include drfftw.h" ) ])
+---
+> dnl PKG_CHECK_MODULES(FST, libfst >= 1.3, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} fst.la", AC_MSG_RESULT(fst not found))
+45c41,53
+< AC_CHECK_HEADERS(rfftw.h,  [ OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} fft.la ifft.la"
+---
+> dnl AC_CHECK_HEADERS(drfftw.h, [ OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} fft.la ifft.la"
+> dnl 			       FFTW_WITH_PREFIX="yes"
+> dnl 			       FFTW_LIBS="-ldrfftw -ldfftw"
+> dnl                                AC_SUBST(FFTW_LIBS)
+> dnl                                AC_DEFINE( FFTW_PREFIX, 1, "include drfftw.h" ) ])
+> dnl 
+> dnl AC_CHECK_HEADERS(rfftw.h,  [ OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} fft.la ifft.la"
+> dnl 			       FFTW_WITH_PREFIX="no" 
+> dnl 			       FFTW_LIBS="-lfftw -lrfftw"
+> dnl 			       AC_SUBST(FFTW_LIBS)
+> dnl 			       AC_DEFINE( FFTW_PREFIX, 0, "include rfftw.h" ) ] )
+> 
+> AC_CHECK_HEADERS(srfftw.h,  [ OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} fft.la ifft.la"
+47c55
+< 			       FFTW_LIBS="-lfftw -lrfftw"
+---
+> 			       FFTW_LIBS="-lsfftw -lsrfftw"
+49,50c57
+< 			       AC_DEFINE( FFTW_PREFIX, 0, "include rfftw.h" ) ] )
+< 
+---
+> 			       AC_DEFINE( FFTW_PREFIX, 0, "include srfftw.h" ) ] )
+64,65d70
+< dnl AM_PATH_GTK(1.2.0, ,
+< dnl	    AC_MSG_ERROR(Cannot find GTK: is gtk-config in path?))
+68a74
+> PKG_CHECK_MODULES( GMODULE, gmodule-2.0 >= 2.0 )
+70c76
+< dnl AM_PATH_GDK_PIXBUF()
+---
+> PKG_CHECK_MODULES( LASH, lash-1.0 >= 0.5 )
+72c78
+< AM_PATH_ALSA(0.9.0, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} alsa_out.la alsa_out_callback.la alsa_midi.la", AC_MSG_RESULT(Alsa not found))
+---
+> AM_PATH_ALSA(0.9.0, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} alsa_midi.la", AC_MSG_RESULT(Alsa not found))
+92a99,100
+> PKG_CHECK_MODULES( CANVAS, libgnomecanvas-2.0 >= 2.0, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} canvascontrol.la", AC_MSG_RESULT(libgnomecanvas not found) )
+> 
+Index: include/control.h
+===================================================================
+RCS file: /cvsroot/galan/galan/include/control.h,v
+retrieving revision 1.9
+diff -r1.9 control.h
+47a48,50
+> struct Control;
+> typedef void (* ControlMove_cb)(struct Control *);
+> 
+60d62
+< 
+104a107
+>   ControlMove_cb move_callback;
+109a113,114
+> extern GtkWidget *control_panel;
+> 
+Index: include/generator.h
+===================================================================
+RCS file: /cvsroot/galan/galan/include/generator.h,v
+retrieving revision 1.11
+diff -r1.11 generator.h
+24c24
+< #define SAMPLE_RATE		48000
+---
+> #define SAMPLE_RATE		gen_get_sample_rate()
+27a28
+> 
+28a30,32
+> #define HAVE_FLOAT_SAMPLE 1
+> #undef HAVE_DOUBLE_SAMPLE
+> 
+116a121
+>   AE_MIDIEVENT,		/**< a midi event  */
+144c149,154
+< struct AEvent {		/**< audio event */
+---
+> typedef struct midiev {
+>     char midistring[4];
+>     int len;
+> } MidiEv;
+> 
+> struct AEvent {			/**< audio event */
+157a168
+>     MidiEv midiev;		/**< AE_MIDIEVENT */
+242c253
+<   SAMPLETIME last_sampletime;
+---
+>   SAMPLETIME *last_sampletime;
+368a380,381
+> extern int  gen_get_sample_rate(void);
+> 
+Index: plugins/Makefile.am
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/Makefile.am,v
+retrieving revision 1.22
+diff -r1.22 Makefile.am
+15,16c15,17
+< EXTRA_LTLIBRARIES = esd_output.la pcm_out.la ogg_ra.la emu10k1.la alsa_out.la alsa_midi.la sndfile_in.la sndfile_out.la \
+< 		 alsa_out_callback.la jack.la voice.la 
+---
+> EXTRA_LTLIBRARIES = esd_output.la pcm_out.la ogg_ra.la emu10k1.la alsa_midi.la sndfile_in.la sndfile_out.la \
+> 		 jack.la voice.la midi_seq_clock.la  midiclock.la oss_output.la oss_input.la joyport.la \
+> 		 fft.la ifft.la fst.la canvascontrol.la
+19c20
+< 	osc.la oss_output.la random.la rart.la ctrl.la gain.la \
+---
+> 	osc.la random.la rart.la ctrl.la gain.la \
+22c23
+< 	reverse.la patloop.la vco.la sigctrl.la oss_input.la polyrart.la smooth.la scope.la joyport.la \
+---
+> 	reverse.la patloop.la vco.la sigctrl.la polyrart.la smooth.la scope.la \
+24c25
+< 	evtsgn.la strcombo.la filerequester.la midi_seq_clock.la  midiclock.la sqrt.la \
+---
+> 	evtsgn.la strcombo.la filerequester.la sqrt.la \
+26,27c27,29
+< 	integrate.la diff.la notetofreq.la fbdelay.la fft.la powerspectrum.la\
+< 	arrwindow.la arrmul.la arradd.la ifft.la ra2evt.la sigpow.la sigsignum.la sigabs.la voice_allocator.la\
+---
+> 	integrate.la diff.la notetofreq.la fbdelay.la powerspectrum.la\
+> 	arrwindow.la arrmul.la arradd.la ra2evt.la sigpow.la sigsignum.la sigabs.la voice_allocator.la\
+> 	midievt_noteon.la midievt_noteoff.la midievt_cc.la numtostring.la\
+32,34c34,36
+< AM_LDFLAGS = "-module" @GTK_LIBS@
+< LIBS = @GTK_LIBS@ @GTHREAD_LIBS@ $(srcdir)/../src/libgalan.la
+< INCLUDES = -I.. -I$(srcdir)/../include @GTK_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\" -DSITE_PKGDATA_DIR=\"$(pkgdatadir)\" 
+---
+> AM_LDFLAGS = -module -no-undefined
+> LIBS = @GTK_LIBS@ @GTHREAD_LIBS@ @LASH_LIBS@ $(srcdir)/../src/libgalan.la
+> INCLUDES = -I.. -I$(srcdir)/../include @GTK_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\" -DSITE_PKGDATA_DIR=\"$(pkgdatadir)\"  @LASH_CFLAGS@
+41,44d42
+< alsa_out_la_INCLUDES= @ALSA_CFLAGS@
+< alsa_out_la_LDFLAGS= @ALSA_LIBS@ -rpath $(plugindir)
+< alsa_out_callback_la_INCLUDES= @ALSA_CFLAGS@
+< alsa_out_callback_la_LDFLAGS= @ALSA_LIBS@ -rpath $(pkglibdir)
+49a48,53
+> canvascontrol_la_CFLAGS = @CANVAS_CFLAGS@
+> canvascontrol_la_LDFLAGS = @CANVAS_LIBS@ -rpath $(plugindir)
+> 
+> midi_seq_clock_la_LDFLAGS= -rpath $(plugindir)
+> midi_clock_la_LDFLAGS= -rpath $(plugindir)
+> joyport_la_LDFLAGS= -rpath $(plugindir)
+65,66c69,73
+< ladspa_la_LDFLAGS = @LRDF_LIBS@
+< ladspa_la_INCLUDES = @LRDF_CFLAGS@
+---
+> ladspa_la_LDFLAGS = @LRDF_LIBS@ @GMODULE_LIBS@
+> ladspa_la_INCLUDES = @LRDF_CFLAGS@ @GMODULE_CFLAGS@
+> 
+> fst_la_LDFLAGS = @FST_LIBS@ -rpath $(plugindir)
+> fst_la_INCLUDES = @FST_CFLAGS@
+Index: plugins/alsa_midi.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/alsa_midi.c,v
+retrieving revision 1.4
+diff -r1.4 alsa_midi.c
+42a43
+> #include "galan_lash.h"
+72,81d72
+< /*  gint fd;  
+<   gint input_tag;
+<   SAMPLETIME miditime_offset;
+<   SAMPLETIME gentime_offset;
+<   SAMPLETIME last_timestamp;
+<   gint midibytestocome, midibufpos;
+<   unsigned char midibuffer[MIDI_BUFSIZE];
+<   SAMPLETIME buffer_timestamp;
+<   unsigned char laststatus;
+<   */
+83a75,76
+>   void (*exec_ev)( Generator *g, snd_seq_event_t *ev );
+>   snd_seq_event_t *rdev;
+128a122,125
+> 
+> 			if( lash_enabled( galan_lash_get_client() ) )
+> 			    lash_alsa_client_id(galan_lash_get_client(), (unsigned char)snd_seq_client_id(seq_client));
+> 
+134c131
+< PRIVATE void execute_event( snd_seq_event_t *ev ) {
+---
+> PRIVATE void execute_event_old( Generator *g, snd_seq_event_t *ev ) {
+137,142d133
+<     //Data *data = g->data;
+<     //int channel = data->laststatus & 0x0f;
+< 
+<     int port = ev->dest.port;
+<     Generator *g = g_hash_table_lookup( clients, &port );
+<     RETURN_UNLESS( g != NULL );
+163d153
+< 		//gen_init_aevent( &event, AE_NUMBER, NULL, 0, NULL, 0, ev->timestamp );
+170c160,164
+< 		gen_send_events(g, EVT_NOTE, -1, &event);
+---
+> 
+> 		if( ev->data.note.velocity != 0 )
+> 		    gen_send_events(g, EVT_NOTE, -1, &event);
+> 		else
+> 		    gen_send_events(g, EVT_NOTEOFF, -1, &event);
+226,260d219
+< //    g_print( "Executing MIDI Command %d...\n" , (int) data->laststatus );
+< //    switch( data->laststatus & 0xf0 ) {
+< //	case 0x90:
+< //	    {
+< //		// now the note is in data->midibuffer[0] and the velocity is in [1] 
+< //		
+< //		//g_print( "lasttimestamp=%d, gen=%d, diff=%d (%fsec)\n", data->last_timestamp, gen_get_sampletime(), data->last_timestamp - gen_get_sampletime(), ((gdouble)(data->last_timestamp - gen_get_sampletime())) / SAMPLE_RATE );
+< //		gen_init_aevent( &event, AE_NUMBER, NULL, 0, NULL, 0, data->last_timestamp );
+< //
+< //		event.d.number = channel;
+< //		gen_send_events(g, EVT_CHANNEL, -1, &event);
+< //
+< //		//g_print( "(%x,%x)\n", data->midibuffer[0], data->midibuffer[1] );
+< //		event.d.number = data->midibuffer[0];
+< //		gen_send_events(g, EVT_NOTE, -1, &event);
+< //
+< //		event.d.number = data->midibuffer[1];
+< //		gen_send_events(g, EVT_VELOCITY, -1, &event);
+< //	    
+< //		break;
+< //		
+< //	    }
+< //	case 0xc0:
+< //	    {
+< //		gen_init_aevent( &event, AE_NUMBER, NULL, 0, NULL, 0, data->last_timestamp );
+< //
+< //		event.d.number = channel;
+< //		gen_send_events(g, EVT_CHANNEL, -1, &event);
+< //
+< //		//g_print( "(%x,%x)\n", data->midibuffer[0], data->midibuffer[1] );
+< //		event.d.number = data->midibuffer[0];
+< //		gen_send_events(g, EVT_PROGAMCHANGE, -1, &event);
+< //	    }
+< //	    
+< //    }
+264c223,230
+< PRIVATE void input_callback( Generator *g, gint source, GdkInputCondition condition ) {
+---
+> PRIVATE void execute_event_new( Generator *g, snd_seq_event_t *ev ) {
+>     
+>     AEvent event;
+>     
+>     switch( ev->type ) {
+> 	case SND_SEQ_EVENT_CLOCK:
+> 	    {
+> 		gen_init_aevent( &event, AE_MIDIEVENT, NULL, 0, NULL, 0, gen_get_sampletime() );
+266,269c232,239
+<     //Data *data = g->data;
+<     //unsigned char midievent[4];
+<     //AEvent event;
+<     //int l,i;
+---
+> 		event.d.midiev.len = 1;
+> 		event.d.midiev.midistring[0] = 0xf8;  // FIXME
+> 		gen_send_events(g, 0, -1, &event);
+> 		break;
+> 	    }
+> 	case SND_SEQ_EVENT_START:
+> 	    {
+> 		gen_init_aevent( &event, AE_MIDIEVENT, NULL, 0, NULL, 0, gen_get_sampletime() );
+271,272c241,248
+<     snd_seq_event_t *ev;
+<     //snd_midi_event_t *midi_ev;
+---
+> 		event.d.midiev.len = 1;
+> 		event.d.midiev.midistring[0] = 0xfa;  // FIXME
+> 		gen_send_events(g, 0, -1, &event);
+> 		break;
+> 	    }
+> 	case SND_SEQ_EVENT_NOTEON:
+> 	    {
+> 		gen_init_aevent( &event, AE_MIDIEVENT, NULL, 0, NULL, 0, gen_get_sampletime() );
+274c250,251
+<     //g_print( "input here :)\n" );
+---
+> 		event.d.midiev.len = 3;
+> 		event.d.midiev.midistring[0] = 0x90 | ev->data.note.channel;
+276,279c253,254
+<  
+<   
+<     /* alsa midi parser */
+<     //snd_midi_event_new( 10, &midi_ev );
+---
+> 		event.d.midiev.midistring[1] = ev->data.note.note;
+> 		event.d.midiev.midistring[2] = ev->data.note.velocity;
+281,284c256,262
+<     /* temp for midi data */
+<     //unsigned char buffer[3];
+<     
+<     snd_seq_event_input(seq_client, &ev);
+---
+> 		gen_send_events(g, 0, -1, &event);
+> 	    
+> 		break;
+> 	    }
+> 	case SND_SEQ_EVENT_NOTEOFF:
+> 	    {
+> 		gen_init_aevent( &event, AE_MIDIEVENT, NULL, 0, NULL, 0, gen_get_sampletime() );
+286c264,265
+<     //g_print( "event type: %d timestamp %d:%d\n", ev->type, ev->time.time.tv_sec, ev->time.time.tv_nsec );
+---
+> 		event.d.midiev.len = 2;
+> 		event.d.midiev.midistring[0] = 0x80 | ev->data.note.channel;
+288c267
+<     execute_event( ev );
+---
+> 		event.d.midiev.midistring[1] = ev->data.note.note;
+290,297c269,275
+<     //snd_midi_event_decode( midi_ev,
+< //			   buffer,
+< //			   3,
+< //			   ev ); 
+<     
+< //    a_in->setTimeStamp( ev->time.tick );
+< //    a_in->setStatus( buffer[0] );
+< //    a_in->setData( buffer[1], buffer[2] );
+---
+> 		gen_send_events(g, 0, -1, &event);
+> 	    
+> 		break;
+> 	    }
+> 	case SND_SEQ_EVENT_PGMCHANGE:
+> 	    {
+> 		gen_init_aevent( &event, AE_MIDIEVENT, NULL, 0, NULL, 0, gen_get_sampletime() );
+299,300c277,288
+<     snd_seq_free_event( ev );
+< //    snd_midi_event_free( midi_ev );
+---
+> 		event.d.midiev.len = 2;
+> 		event.d.midiev.midistring[0] = 0xc0 | ev->data.control.channel;
+> 
+> 		event.d.midiev.midistring[1] = ev->data.control.value;
+> 
+> 		gen_send_events(g, 0, -1, &event);
+> 	    
+> 		break;
+> 	    }
+> 	case SND_SEQ_EVENT_CONTROLLER:
+> 	    {
+> 		gen_init_aevent( &event, AE_MIDIEVENT, NULL, 0, NULL, 0, gen_get_sampletime() );
+301a290,291
+> 		event.d.midiev.len = 3;
+> 		event.d.midiev.midistring[0] = 0xb0 | ev->data.control.channel;
+303,378c293,322
+< //    l = read( source, &midievent, 4 );
+< //
+< //    for( i=0; i<l; i+=4 ) {
+< //	//g_print( "%d midiev: %d, %x\n", i, (int) midievent[i], *((int *) &midievent[i]) & 0xffffff00 );
+< //	switch( midievent[i] ) {
+< //	    case SEQ_WAIT:
+< //		//g_print( "TMR_WAIT_ABS: %d\n",  *((int *) &midievent[i]) >> 8 );
+< //		if( data->miditime_offset == -1 ) {
+< //		    data->miditime_offset = (*((int *) midievent) >> 8)  * SAMPLE_RATE / 100;
+< //		    data->gentime_offset = gen_get_sampletime();
+< //		}
+< //		data->last_timestamp = (*((int *) &midievent[i]) >> 8) * SAMPLE_RATE / 100
+< //		    - data->miditime_offset + data->gentime_offset;
+< //
+< //		break;
+< //	    case SEQ_MIDIPUTC:
+< //		switch( midievent[1] & 0xf0 ) {
+< //		    case 0xf0:
+< //			switch( midievent[1] ) {
+< //			    case 0xf8:
+< //				gen_init_aevent(&event, AE_NUMBER, NULL, 0, NULL, 0, data->last_timestamp );
+< //				event.d.number = 1;
+< //				gen_send_events(g, EVT_CLOCK, -1, &event);
+< //				break;
+< //
+< //			    case 0xfa:
+< //				gen_init_aevent(&event, AE_NUMBER, NULL, 0, NULL, 0, data->last_timestamp );
+< //				event.d.number = 1;
+< //				gen_send_events(g, EVT_START, -1, &event);
+< //				break;
+< //			}
+< //			break;
+< //
+< //		    case 0xe0:
+< //		    case 0xd0:
+< //		    case 0xc0:
+< //		    case 0xb0:
+< //		    case 0xa0:
+< //		    case 0x80:
+< //		    case 0x90:
+< //			data->laststatus = midievent[1];
+< //			data->midibytestocome = get_bytes_to_come( data->laststatus );
+< //			//g_print( "playevent here\n" );
+< //			data->midibufpos = 0;
+< //			
+< //			break;
+< //
+< //		    default:
+< //			//g_print( "in default... %d ls=%x\n", data->midibytestocome, (int) data->laststatus );
+< //			if( data->midibytestocome ) {
+< //			    
+< //			    data->midibuffer[data->midibufpos++] = midievent[1];
+< //
+< //			    if( (data->midibytestocome--) == 1 ) {
+< //
+< //				// Now there is a midicommand in data->midibuffer
+< //				// status byte is data->laststatus
+< //
+< //				execute_midi_command( g );
+< //			    }
+< //
+< //			} else {
+< //
+< //			    // running command.. set bytes_to_come to 
+< //			    data->midibytestocome = get_bytes_to_come( data->laststatus ) - 1;
+< //			    data->midibufpos = 0;
+< //
+< //			    // Store this byte...
+< //			    data->midibuffer[data->midibufpos++] = midievent[1];
+< //			}
+< //			    
+< //
+< //
+< //		}
+< //		break;
+< //	}
+---
+> 		event.d.midiev.midistring[1] = ev->data.control.param;
+> 		event.d.midiev.midistring[2] = ev->data.control.value;
+> 
+> 		gen_send_events(g, 0, -1, &event);
+> 	    
+> 		break;
+> 	    }
+> 	default:
+> 	    break;
+> 
+>     }
+> 	
+> }
+> PRIVATE void input_callback( Generator *gold, gint source, GdkInputCondition condition ) {
+> 
+>     Data *data;
+>     int port;
+>     Generator *g;
+>     snd_seq_event_t *ev;
+> 
+>     snd_seq_event_input(seq_client, &ev);
+> 
+>     port = ev->dest.port;
+> 
+>     g = g_hash_table_lookup( clients, &port );
+>     RETURN_UNLESS( g != NULL );
+>     data=g->data;
+>     data->exec_ev( g, ev );
+> 
+>     snd_seq_free_event( ev );
+404c348,350
+<   //seq_clock = gen_register_clock(g, "ALSA Output Clock", clock_handler);
+---
+> 
+>   return 1;
+> }
+407,408c353,381
+<   //gen_register_realtime_fn(g, realtime_handler);
+<   //gen_select_clock(data->clock);	/* a not unreasonable assumption? */
+---
+> 
+> 
+> PRIVATE int init_instance_new(Generator *g) {
+>   Data *data = safe_malloc(sizeof(Data));
+>   int ret;
+>   g->data = data;
+> 
+>   /*
+>    * open a port on alsa_seq.
+>    * how do i update the name of the port when generator is renamed ?
+>    */
+> 
+>   data->exec_ev = execute_event_new;
+> 
+>     ret = snd_seq_create_simple_port(seq_client, 
+> 				     g->name,
+> 				     SND_SEQ_PORT_CAP_WRITE |
+> 				     SND_SEQ_PORT_CAP_SUBS_WRITE,
+> 				     SND_SEQ_PORT_TYPE_MIDI_GENERIC |
+> 				     SND_SEQ_PORT_TYPE_APPLICATION );
+>     data->seq_port = ret;
+>     data->rdev = NULL;
+> 
+>     if ( ret < 0 ){
+> 	printf( "snd_seq_create_simple_port(read) error\n");
+> 	return 0;
+>     }
+> 
+>     g_hash_table_insert( clients, &data->seq_port, g );
+412a386,389
+> PRIVATE int init_instance_out(Generator *g) {
+>   Data *data = safe_malloc(sizeof(Data));
+>   int ret;
+>   g->data = data;
+414,417c391,394
+< /*
+<  * This is the input callback....
+<  * Seems to bo ok for now..
+<  */
+---
+>   /*
+>    * open a port on alsa_seq.
+>    * how do i update the name of the port when generator is renamed ?
+>    */
+418a396
+>   data->exec_ev = execute_event_new;
+419a398,407
+>     ret = snd_seq_create_simple_port(seq_client, 
+> 				     g->name,
+> 				     SND_SEQ_PORT_CAP_READ |
+> 				     SND_SEQ_PORT_CAP_SUBS_READ,
+> 				     SND_SEQ_PORT_TYPE_MIDI_GENERIC |
+> 				     SND_SEQ_PORT_TYPE_APPLICATION );
+>     data->seq_port = ret;
+>     snd_midi_event_new( 10, &data->rdev );
+>     snd_midi_event_init( data->rdev );
+>     snd_midi_event_no_status( data->rdev, 1 );
+420a409,417
+>     if ( ret < 0 ){
+> 	printf( "snd_seq_create_simple_port(read) error\n");
+> 	return 0;
+>     }
+> 
+>     g_hash_table_insert( clients, &data->seq_port, g );
+> 
+>   return 1;
+> }
+422c419
+< PRIVATE int init_instance(Generator *g) {
+---
+> PRIVATE int init_instance_old(Generator *g) {
+431a429
+>   data->exec_ev = execute_event_old;
+439a438
+>     data->rdev = NULL;
+448,462d446
+< //  data->fd = open( "/dev/sequencer", O_RDWR | O_NONBLOCK );
+< //  if( data->fd == -1 ) {
+< //      free( data );
+< //      return 0;
+< //  }
+< //  data->miditime_offset = -1;
+< //  data->last_timestamp = gen_get_sampletime();
+< //  data->midibytestocome = 0;
+< //  data->laststatus = 0;
+< 
+< //  ioctl( data->fd, SNDCTL_SEQ_ACTSENSE_ENABLE, 0 );
+< //  ioctl( data->fd, SNDCTL_SEQ_TIMING_ENABLE, 0 );
+< //  ioctl( data->fd, SNDCTL_SEQ_RT_ENABLE, 0 );
+<       
+<   //data->input_tag = gdk_input_add( data->fd, GDK_INPUT_READ, (GdkInputFunction)  input_callback, (gpointer) g ); 
+471a456,457
+>   if( data->rdev )
+>       snd_midi_event_free( data->rdev );
+484c470
+< PRIVATE void unpickle_instance(Generator *g, ObjectStoreItem *item, ObjectStore *db) {
+---
+> PRIVATE void unpickle_instance_old(Generator *g, ObjectStoreItem *item, ObjectStore *db) {
+489a476
+>     data->exec_ev = execute_event_old;
+496a484
+>     data->rdev = NULL;
+506a495
+> }
+508,520c497,501
+<     //  data->fd = open( "/dev/sequencer", O_RDWR | O_NONBLOCK );
+<     //  if( data->fd == -1 ) {
+<     //      free( data );
+<     //      return 0;
+<     //  }
+<     //  data->miditime_offset = -1;
+<     //  data->last_timestamp = gen_get_sampletime();
+<     //  data->midibytestocome = 0;
+<     //  data->laststatus = 0;
+< 
+<     //  ioctl( data->fd, SNDCTL_SEQ_ACTSENSE_ENABLE, 0 );
+<     //  ioctl( data->fd, SNDCTL_SEQ_TIMING_ENABLE, 0 );
+<     //  ioctl( data->fd, SNDCTL_SEQ_RT_ENABLE, 0 );
+---
+> PRIVATE void unpickle_instance_new(Generator *g, ObjectStoreItem *item, ObjectStore *db) {
+>     Data *data = safe_malloc(sizeof(Data));
+>     int ret;
+> 
+>     g->data = data;
+522c503,551
+<     //data->input_tag = gdk_input_add( data->fd, GDK_INPUT_READ, (GdkInputFunction)  input_callback, (gpointer) g ); 
+---
+>     data->exec_ev = execute_event_new;
+>     ret = snd_seq_create_simple_port(seq_client, 
+> 	    g->name,
+> 	    SND_SEQ_PORT_CAP_WRITE |
+> 	    SND_SEQ_PORT_CAP_SUBS_WRITE,
+> 	    SND_SEQ_PORT_TYPE_MIDI_GENERIC |
+> 	    SND_SEQ_PORT_TYPE_APPLICATION );
+>     data->seq_port = ret;
+>     data->rdev = NULL;
+> 
+>     if ( ret < 0 ){
+> 	printf( "snd_seq_create_simple_port(read) error\n");
+> 	// TODO: make this safe even if port cannot be established
+> 	//       could be in the generator which can have a null generatorclass 
+> 	//       which can be setup by the unpickler....
+> 	return;
+>     }
+> 
+>     g_hash_table_insert( clients, &data->seq_port, g );
+> }
+> 
+> PRIVATE void unpickle_instance_out(Generator *g, ObjectStoreItem *item, ObjectStore *db) {
+>     Data *data = safe_malloc(sizeof(Data));
+>     int ret;
+> 
+>     g->data = data;
+> 
+>     data->exec_ev = execute_event_new;
+>     ret = snd_seq_create_simple_port(seq_client, 
+> 	    g->name,
+> 	    SND_SEQ_PORT_CAP_READ |
+> 	    SND_SEQ_PORT_CAP_SUBS_READ,
+> 	    SND_SEQ_PORT_TYPE_MIDI_GENERIC |
+> 	    SND_SEQ_PORT_TYPE_APPLICATION );
+>     data->seq_port = ret;
+> 
+>     snd_midi_event_new( 10, &data->rdev );
+>     snd_midi_event_init( data->rdev );
+>     snd_midi_event_no_status( data->rdev, 1 );
+> 
+>     if ( ret < 0 ){
+> 	printf( "snd_seq_create_simple_port(read) error\n");
+> 	// TODO: make this safe even if port cannot be established
+> 	//       could be in the generator which can have a null generatorclass 
+> 	//       which can be setup by the unpickler....
+> 	return;
+>     }
+> 
+>     g_hash_table_insert( clients, &data->seq_port, g );
+526d554
+<   //Data *data = g->data;
+530,534c558,576
+< PRIVATE ControlDescriptor controls[] = {
+<   /* { kind, name, min,max,step,page, size,editable, is_dst,queue_number,
+<        init,destroy,refresh,refresh_data }, */
+<      { CONTROL_KIND_NONE, }
+< };
+---
+> PRIVATE void evt_midi_handler(Generator *g, AEvent *event) {
+>   Data *data = g->data;
+> 
+>   //int i;
+> 
+>   if( event->kind != AE_MIDIEVENT )
+>       return;
+> 
+>   snd_seq_event_t seqev;
+> 
+>   snd_seq_ev_clear( &seqev );
+> 
+>   snd_midi_event_encode( data->rdev, event->d.midiev.midistring, event->d.midiev.len, &seqev );
+>   
+>   snd_seq_ev_set_subs( &seqev );
+>   snd_seq_ev_set_source( &seqev, data->seq_port );
+> 
+>   snd_seq_event_output_direct( seq_client, &seqev );
+> }
+543,545c585,587
+< 					     NULL, NULL, controls,
+< 					     init_instance, destroy_instance,
+< 					     unpickle_instance, pickle_instance);
+---
+> 					     NULL, NULL, NULL,
+> 					     init_instance_old, destroy_instance,
+> 					     unpickle_instance_old, pickle_instance);
+556a599,614
+> 
+>   k = gen_new_generatorclass("alsa_seq_in", FALSE, 0, 1,
+> 					     NULL, NULL, NULL,
+> 					     init_instance_new, destroy_instance,
+> 					     unpickle_instance_new, pickle_instance);
+> 
+>   gen_configure_event_output(k, 0,   "Midi Out");
+>   gencomp_register_generatorclass(k, FALSE, "Misc/Alsa Seq In", NULL, NULL);
+> 
+>   k = gen_new_generatorclass("alsa_seq_out", FALSE, 1, 0,
+> 					     NULL, NULL, NULL,
+> 					     init_instance_out, destroy_instance,
+> 					     unpickle_instance_out, pickle_instance);
+> 
+>   gen_configure_event_input(k, 0,   "Midi In", evt_midi_handler );
+>   gencomp_register_generatorclass(k, FALSE, "Misc/Alsa Seq Out", NULL, NULL);
+Index: plugins/arrmul.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/arrmul.c,v
+retrieving revision 1.4
+diff -r1.4 arrmul.c
+106c106
+< 		g_printf( "arrmul dimension mismatch (data->len, event->len ) = ( %d, %d )\n", data->len, event->d.array.len );
+---
+> 		g_print( "arrmul dimension mismatch (data->len, event->len ) = ( %d, %d )\n", data->len, event->d.array.len );
+Index: plugins/evtcomp.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/evtcomp.c,v
+retrieving revision 1.1
+diff -r1.1 evtcomp.c
+42c42,43
+< #define NUM_EVENT_OUTPUTS	1
+---
+> #define EVT_NEOUT		1
+> #define NUM_EVENT_OUTPUTS	2
+80a82,83
+>   } else {
+>       gen_send_events(g, EVT_NEOUT, -1, event);
+105a109
+>   gen_configure_event_output(k, EVT_NEOUT, "Not Eq Output");
+Index: plugins/fbdelay.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/fbdelay.c,v
+retrieving revision 1.3
+diff -r1.3 fbdelay.c
+60c60
+<   { CONTROL_KIND_KNOB, "delay", MAXIMUM_REALTIME_STEP/SAMPLE_RATE,1,0.0025,0.001, 0,TRUE, 1,EVT_DELAY,
+---
+>   { CONTROL_KIND_KNOB, "delay", 0,1,0.0025,0.001, 0,TRUE, 1,EVT_DELAY,
+180a181,183
+> 
+>   delay_controls[0].min = MAXIMUM_REALTIME_STEP/SAMPLE_RATE;
+> 
+Index: plugins/fft.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/fft.c,v
+retrieving revision 1.3
+diff -r1.3 fft.c
+25a26
+> #include <glib.h>
+32a34
+> #ifdef HAVE_DOUBLE_SAMPLE 
+37a40,44
+> #endif
+> 
+> #ifdef HAVE_FLOAT_SAMPLE
+> #include <srfftw.h>
+> #endif
+93c100
+<   RETURN_UNLESS( event->kind == AE_DBLARRAY );
+---
+>   RETURN_UNLESS( event->kind == AE_NUMARRAY );
+107c114
+<   out = safe_malloc( sizeof( fftw_real ) * data->lastN );
+---
+>   out = g_alloca( sizeof( fftw_real ) * data->lastN );
+109c116
+<   rfftw_one( data->plan, event->d.darray.numbers, out );
+---
+>   rfftw_one( data->plan, event->d.array.numbers, out );
+112c119
+<   gen_init_aevent(&send_ev, AE_DBLARRAY, NULL, 0, NULL, 0, event->time);
+---
+>   gen_init_aevent(&send_ev, AE_NUMARRAY, NULL, 0, NULL, 0, event->time);
+114,115c121,122
+<   send_ev.d.darray.len = data->lastN;
+<   send_ev.d.darray.numbers = out;
+---
+>   send_ev.d.array.len = data->lastN;
+>   send_ev.d.array.numbers = out;
+119,120d125
+< 
+<   free(out);
+Index: plugins/ifft.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/ifft.c,v
+retrieving revision 1.3
+diff -r1.3 ifft.c
+25a26
+> #include <glib.h>
+32a34
+> #if SAMPLE == double
+37a40,42
+> #else
+> #include <srfftw.h>
+> #endif
+93c98
+<   RETURN_UNLESS( event->kind == AE_DBLARRAY );
+---
+>   RETURN_UNLESS( event->kind == AE_NUMARRAY );
+107c112
+<   out = safe_malloc( sizeof( fftw_real ) * data->lastN );
+---
+>   out = g_alloca( sizeof( fftw_real ) * data->lastN );
+109c114
+<   rfftw_one( data->plan, event->d.darray.numbers, out );
+---
+>   rfftw_one( data->plan, event->d.array.numbers, out );
+112c117
+<   gen_init_aevent(&send_ev, AE_DBLARRAY, NULL, 0, NULL, 0, event->time);
+---
+>   gen_init_aevent(&send_ev, AE_NUMARRAY, NULL, 0, NULL, 0, event->time);
+114,115c119,120
+<   send_ev.d.darray.len = data->lastN;
+<   send_ev.d.darray.numbers = out;
+---
+>   send_ev.d.array.len = data->lastN;
+>   send_ev.d.array.numbers = out;
+119,120d123
+< 
+<   free(out);
+Index: plugins/iir_generic.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/iir_generic.c,v
+retrieving revision 1.3
+diff -r1.3 iir_generic.c
+159,160c159,160
+<   RETURN_UNLESS( event->kind == AE_NUMARRAY );
+<   RETURN_UNLESS( (event->d.array.len & 1) == 0 );
+---
+>   RETURN_UNLESS( event->kind == AE_DBLARRAY );
+>   RETURN_UNLESS( (event->d.darray.len & 1) == 0 );
+162c162
+<   len = event->d.array.len / 2;
+---
+>   len = event->d.darray.len / 2;
+180c180
+<       data->coeffs[i] = event->d.array.numbers[i];
+---
+>       data->coeffs[i] = event->d.darray.numbers[i];
+182c182
+<       data->zcoeffs[i] = event->d.array.numbers[i+data->len];
+---
+>       data->zcoeffs[i] = event->d.darray.numbers[i+data->len];
+Index: plugins/jack.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/jack.c,v
+retrieving revision 1.8
+diff -r1.8 jack.c
+44a45,47
+> #include <galan_jack.h>
+> #include <galan_lash.h>
+> 
+95d97
+< int rate = SAMPLE_RATE;				 /* stream rate */
+177,184c179,182
+<   switch (reason) {
+<     case CLOCK_DISABLE:
+<       jack_deactivate( jack_client );
+<       break;
+< 
+<     case CLOCK_ENABLE:
+<       jack_set_process_callback( jack_client, (JackProcessCallback) process_callback, NULL ); 
+<       jack_on_shutdown (jack_client, jack_shutdown, 0);
+---
+>     switch (reason) {
+> 	case CLOCK_DISABLE:
+> 	    jack_deactivate( jack_client );
+> 	    break;
+186,187c184,196
+<       jack_activate( jack_client );
+<       break;
+---
+> 	case CLOCK_ENABLE:
+> 	    jack_set_process_callback( jack_client, (JackProcessCallback) process_callback, NULL ); 
+> 	    jack_on_shutdown (jack_client, jack_shutdown, 0);
+> 
+> 	    jack_activate( jack_client );
+> 
+> 	    lash_event_t *event;
+> 	    if( lash_enabled( galan_lash_get_client() ) ) {
+> 		event = lash_event_new_with_type(LASH_Jack_Client_Name);
+> 		lash_event_set_string(event, jack_get_client_name( jack_client ) );
+> 		lash_send_event( galan_lash_get_client(), event);
+> 	    }
+> 	    break;
+189,192c198,201
+<     default:
+<       g_message("Unreachable code reached (jack_output)... reason = %d", reason);
+<       break;
+<   }
+---
+> 	default:
+> 	    g_message("Unreachable code reached (jack_output)... reason = %d", reason);
+> 	    break;
+>     }
+203,205d211
+<       //l_buf = safe_malloc(bufbytes);
+<       //r_buf = safe_malloc(bufbytes);
+< 
+213,214d218
+<       //free(l_buf);
+<       //free(r_buf);
+263c267
+<       jack_client = jack_client_new( "galan" );
+---
+>       jack_client = galan_jack_get_client();
+303d306
+<   //jack_timestamp = ;
+306c309
+<       jack_client = jack_client_new( "galan" );
+---
+>       jack_client = galan_jack_get_client();
+338c341
+< 	jack_client = jack_client_new( "galan" );
+---
+> 	jack_client = galan_jack_get_client();
+376,382d378
+< 	if( jack_instance_count == 1 ) {
+< 	    gen_deregister_clock(jack_clock);
+< 	    jack_clock = NULL;
+< 	    jack_client_close( jack_client );
+< 	    jack_client = NULL;
+< 	}
+< 
+401,406d396
+< 	if( jack_instance_count == 1 ) {
+< 	    gen_deregister_clock(jack_clock);
+< 	    jack_clock = NULL;
+< 	    jack_client_close( jack_client );
+< 	    jack_client = NULL;
+< 	}
+420,426d409
+<     if( jack_instance_count == 1 ) {
+< 	gen_deregister_clock(jack_clock);
+< 	jack_clock = NULL;
+< 	jack_client_close( jack_client );
+< 	jack_client = NULL;
+<     }
+< 
+647c630
+< 	jack_client = jack_client_new( "galan" );
+---
+> 	jack_client = galan_jack_get_client();
+677,683d659
+<     if( jack_instance_count == 1 ) {
+< 	gen_deregister_clock(jack_clock);
+< 	jack_clock = NULL;
+< 	jack_client_close( jack_client );
+< 	jack_client = NULL;
+<     }
+< 
+Index: plugins/joyport.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/joyport.c,v
+retrieving revision 1.1
+diff -r1.1 joyport.c
+67a68
+>   char *dev_name;
+96,98c97,101
+< 	  gen_init_aevent(&event, AE_NUMBER, NULL, 0, NULL, 0, gen_get_sampletime() );
+< 	  event.d.number = ((gdouble) jsevent.value) / 32767;
+< 	  gen_send_events(g, jsevent.number, -1, &event);
+---
+> 	  if( jsevent.number < 6 ) {
+> 	      gen_init_aevent(&event, AE_NUMBER, NULL, 0, NULL, 0, gen_get_sampletime() );
+> 	      event.d.number = ((gdouble) jsevent.value) / 32767;
+> 	      gen_send_events(g, jsevent.number, -1, &event);
+> 	  }
+112a116,119
+>     
+>       default:
+> 	  //printf( "unknown event: type %d, num %d, val %d \n", jsevent.type, jsevent.number, jsevent.value  );
+> 	  break;
+132a140
+>   data->dev_name = safe_string_dup("/dev/input/js0");
+134c142
+<   data->fd = open( "/dev/input/js0", O_RDONLY );
+---
+>   data->fd = open( data->dev_name, O_RDONLY );
+144a153,155
+>   if( data->dev_name )
+>       free( data->dev_name );
+> 
+158a170
+>   data->dev_name = safe_string_dup( objectstore_item_get_string(item, "dev_name", "/dev/input/js0" ) );
+160c172
+<   data->fd = open( "/dev/input/js0", O_RDONLY );
+---
+>   data->fd = open( data->dev_name, O_RDONLY );
+165c177,179
+<   //Data *data = g->data;
+---
+>   Data *data = g->data;
+>   if (data->dev_name != NULL)
+>     objectstore_item_set_string(item, "dev_name", data->dev_name);
+181a196,225
+> // Properties...
+> 
+> PRIVATE void propgen(Component *c, Generator *g) {
+>   Data *data = g->data;
+> 
+>   GtkWidget *hb = gtk_hbox_new(FALSE, 5);
+>   GtkWidget *label = gtk_label_new("Joystick Device:");
+>   GtkWidget *text = gtk_entry_new();
+> 
+>   gtk_box_pack_start(GTK_BOX(hb), label, TRUE, FALSE, 0);
+>   gtk_box_pack_start(GTK_BOX(hb), text, TRUE, FALSE, 0);
+> 
+>   gtk_widget_show(label);
+>   gtk_widget_show(text);
+> 
+>   gtk_entry_set_text(GTK_ENTRY(text), data->dev_name );
+> 
+>   popup_dialog("Properties", MSGBOX_DISMISS, 0, MSGBOX_DISMISS, hb, NULL, 0);
+> 
+>   if( data->dev_name )
+>       free( data->dev_name );
+> 
+>   data->dev_name = safe_string_dup(gtk_entry_get_text(GTK_ENTRY(text)));
+> 
+>   gdk_input_remove( data->input_tag );
+>   close( data->fd );
+> 
+>   data->fd = open( data->dev_name, O_RDONLY );
+>   data->input_tag = gdk_input_add( data->fd, GDK_INPUT_READ, (GdkInputFunction)  input_callback, (gpointer) g ); 
+> }
+208c252
+<   gencomp_register_generatorclass(k, FALSE, GENERATOR_CLASS_PATH, NULL, NULL);
+---
+>   gencomp_register_generatorclass(k, FALSE, GENERATOR_CLASS_PATH, NULL, propgen);
+Index: plugins/ladspa-load.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/ladspa-load.c,v
+retrieving revision 1.1
+diff -r1.1 ladspa-load.c
+9c9,10
+< #include <dlfcn.h>
+---
+> #include <glib.h>
+> #include <gmodule.h>
+30c31
+<   DIR * psDirectory;
+---
+>   GDir * psDirectory;
+32,35c33,34
+<   long lDirLength;
+<   long iNeedSlash;
+<   struct dirent * psDirectoryEntry;
+<   void * pvPluginHandle;
+---
+>   const char * pcDirectoryEntry;
+>   GModule * psPluginHandle;
+37,45c36
+<   lDirLength = strlen(pcDirectory);
+<   if (!lDirLength)
+<     return;
+<   if (pcDirectory[lDirLength - 1] == '/')
+<     iNeedSlash = 0;
+<   else
+<     iNeedSlash = 1;
+< 
+<   psDirectory = opendir(pcDirectory);
+---
+>   psDirectory = g_dir_open(pcDirectory, 0, NULL);
+51,53c42,44
+<     psDirectoryEntry = readdir(psDirectory);
+<     if (!psDirectoryEntry) {
+<       closedir(psDirectory);
+---
+>     pcDirectoryEntry = g_dir_read_name(psDirectory);
+>     if (!pcDirectoryEntry) {
+>       g_dir_close(psDirectory);
+57,63c48
+<     pcFilename = malloc(lDirLength
+< 			+ strlen(psDirectoryEntry->d_name)
+< 			+ 1 + iNeedSlash);
+<     strcpy(pcFilename, pcDirectory);
+<     if (iNeedSlash)
+<       strcat(pcFilename, "/");
+<     strcat(pcFilename, psDirectoryEntry->d_name);
+---
+>     pcFilename = g_build_filename( pcDirectory, pcDirectoryEntry, NULL );
+65,66c50,51
+<     pvPluginHandle = dlopen(pcFilename, RTLD_LAZY);
+<     if (pvPluginHandle) {
+---
+>     psPluginHandle = g_module_open (pcFilename, G_MODULE_BIND_LAZY );
+>     if (psPluginHandle) {
+69,73c54,55
+<       dlerror();
+<       fDescriptorFunction
+< 	= (LADSPA_Descriptor_Function)dlsym(pvPluginHandle,
+< 					    "ladspa_descriptor");
+<       if (dlerror() == NULL && fDescriptorFunction) {
+---
+>       //dlerror();
+>       if( g_module_symbol(psPluginHandle, "ladspa_descriptor", &fDescriptorFunction ) ) {
+77c59
+< 			  pvPluginHandle,
+---
+> 			  psPluginHandle,
+79c61
+< 	free(pcFilename);
+---
+> 	g_free(pcFilename);
+83,84c65,66
+< 	dlclose(pcFilename);
+< 	free(pcFilename);
+---
+> 	g_module_close(psPluginHandle);
+> 	g_free(pcFilename);
+104,105c86
+< 	    "environment variable set.\n");
+<     return;
+---
+> 	    "environment variable set. Using \"/usr/lib/ladspa:/usr/local/lib/ladspa\"\n");
+Index: plugins/ladspa.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/ladspa.c,v
+retrieving revision 1.8
+diff -r1.8 ladspa.c
+8d7
+< #include <dlfcn.h>
+130a130,132
+> #ifdef G_OS_WIN32
+> 	      event.d.number = data->outevents[i];
+> #else
+136a139
+> #endif //G_OS_WIN32
+495c498
+< AGenerator_t output_generators[] = { output_generator0, output_generator1, output_generator2, output_generator3,
+---
+> PRIVATE AGenerator_t output_generators[] = { output_generator0, output_generator1, output_generator2, output_generator3,
+499c502
+< PUBLIC void control_LADSPA_Data_updater(Control *c) {
+---
+> PRIVATE void control_LADSPA_Data_updater(Control *c) {
+720c723
+<     const char * pcError = dlerror();
+---
+>     const char * pcError = g_module_error();
+Index: plugins/midi_seq_clock.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/midi_seq_clock.c,v
+retrieving revision 1.1
+diff -r1.1 midi_seq_clock.c
+251,252c251,252
+<   data->fd = open( "/dev/sequencer", O_RDWR | O_NONBLOCK );
+<   if( data->fd == -1 ) {
+---
+>   data->fd = open( "/dev/sequencer", O_RDWR );
+>   if( data->fd > 0 ) {
+Index: plugins/ogg_ra.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/ogg_ra.c,v
+retrieving revision 1.2
+diff -r1.2 ogg_ra.c
+23,26d22
+< #include <sys/types.h>
+< #include <sys/ioctl.h>
+< #include <sys/soundcard.h>
+< #include <fcntl.h>
+60a57,58
+>     char *new_name;
+>     gboolean atend;
+74a73
+>   gboolean thread_atend;
+90a90,91
+>     retval->new_name = NULL;
+>     retval->atend = FALSE;
+106a108,109
+>     if( buf->new_name )
+> 	free( buf->new_name );
+141c144
+<   data->atend = FALSE;
+---
+>   data->thread_atend = FALSE;
+164c167
+<     if( data->atend )
+---
+>     if( data->thread_atend )
+172a176
+> 	buf->atend = FALSE;
+177c181,191
+< 	    data->atend = TRUE;
+---
+> 	    if( y == 0 ) {
+> 		data->thread_atend = TRUE;
+> 		buf->atend = TRUE;
+> 	    } else {
+> 		if( y < buf->len ) {
+> 		    memset( &(buf->lbuffer[y]), 0, sizeof( SAMPLE ) * (buf->len - y ) );
+> 		    memset( &(buf->rbuffer[y]), 0, sizeof( SAMPLE ) * (buf->len - y ) );
+> 		    y = buf->len;
+> 		}
+> 		
+> 	    }
+239a254,263
+> 	
+> 	if( buf->new_name ) {
+> 
+> 		close_stream( data );
+> 		free( data->curstreamname );
+> 		data->curstreamname = buf->new_name;
+> 		buf->new_name = NULL;
+> 		data->playing = open_stream( data );
+> 	}
+> 
+262c286
+<   data->len = 44100;
+---
+>   data->len = SAMPLE_RATE;
+288c312
+<     data->done_thread = FALSE;
+---
+>     data->done_thread = TRUE;
+308a333
+>   data->done_thread = FALSE;
+347c372,385
+<   if (data->current_buf->len == 0 || offset >= data->current_buf->len || !data->bufferfull )
+---
+>   if( !data->bufferfull ) {
+>       data->current_buf = g_async_queue_try_pop( data->done );
+>       if( !data->current_buf ) {
+> 	  return FALSE;
+>       } else {
+> 	  data->bufferfull = TRUE;
+> 	  if( data->current_buf->atend ) {
+> 	      data->atend = TRUE;
+> 	      return FALSE;
+> 	  }
+>       }
+>   }
+>   
+>   if (!data->current_buf || data->current_buf->len == 0 || offset >= data->current_buf->len || !data->bufferfull )
+370c408,421
+<   if (data->current_buf->len == 0 || offset >= data->current_buf->len || !data->bufferfull )
+---
+>   if( !data->bufferfull ) {
+>       data->current_buf = g_async_queue_try_pop( data->done );
+>       if( !data->current_buf ) {
+> 	  return FALSE;
+>       } else {
+> 	  data->bufferfull = TRUE;
+> 	  if( data->current_buf->atend ) {
+> 	      data->atend = TRUE;
+> 	      return FALSE;
+> 	  }
+>       }
+>   }
+>   
+>   if (!data->current_buf || data->current_buf->len == 0 || offset >= data->current_buf->len || !data->bufferfull )
+398,399c449,450
+<     if( !data->playing )
+< 	return;
+---
+> //    if( !data->playing )
+> //	return;
+407d457
+<     else
+410,411c460,472
+<     data->current_buf = g_async_queue_pop( data->done );
+<     //g_print( "popped.timestamp = %d\n", data->current_buf->timestamp );
+---
+>     data->current_buf = g_async_queue_try_pop( data->done );
+> 
+>     if( data->current_buf ) {
+> 
+> 	data->bufferfull = TRUE;
+> 	if( data->current_buf->atend )
+> 	    data->atend = TRUE;
+> 
+>     } else {
+> 
+> 	data->bufferfull = FALSE;
+> 
+>     }
+413d473
+<     data->bufferfull = TRUE;
+422a483,486
+>     if( !data->bufferfull ) {
+> 	data->current_buf = g_async_queue_pop( data->done );
+>     }
+> 	
+432a497,499
+>     data->current_buf->timestamp = (data->curr_timestamp += data->len);
+>     g_async_queue_push( data->free, data->current_buf );
+>     tmp->timestamp = (data->curr_timestamp += data->len);
+445a513
+>     data->thread_atend = FALSE;
+457,490c525,529
+<     if( data->playing ) {
+< 	if( strcmp( data->curstreamname, event->d.string ) ) {
+< 
+< 	    // own both buffers to stop reader thread.
+< 	    // the data->current_buffer is already owned by the main thread
+< 
+< 	    Buffer *tmp = g_async_queue_pop( data->done );
+< 
+< 	    g_print( "have all buffers\n" );
+< 	    g_print( "pop.timestamp = %d\n", tmp->timestamp );
+< 
+< 	    close_stream( data );
+< 	    data->curstreamname = safe_string_dup( event->d.string );
+< 	    data->playing = open_stream( data );
+< 	    data->curr_timestamp = 0;
+< 
+< 	    tmp->timestamp = 0;
+< 
+< 	    g_print( "push ts=0\n" );
+< 	    
+< 	    g_async_queue_push( data->free, tmp );
+< 	}
+<     } else {
+< 	// own both buffers to stop reader thread.
+< 	// the data->current_buffer is already owned by the main thread
+< 
+< 	Buffer *tmp = g_async_queue_pop( data->done );
+< 
+< 	data->curstreamname = safe_string_dup( event->d.string );
+< 	data->playing = open_stream( data );
+< 	data->curr_timestamp = 0;
+< 
+< 	tmp->timestamp = 0;
+< 	g_async_queue_push( data->free, tmp );
+---
+>     // FIXME: better use a name_change_pending flag.
+>     // and use switch buffer to change the name.
+>     if( !data->bufferfull ) {
+> 	data->current_buf = g_async_queue_pop( data->done );
+> 	data->bufferfull = TRUE;
+491a531,537
+> 
+>     data->current_buf->new_name = safe_string_dup( event->d.string );
+>     data->curr_timestamp = 0;
+> 	
+>     data->atend = FALSE;
+>     data->thread_atend = FALSE;
+>     //data->playing = TRUE;
+Index: plugins/osc.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/osc.c,v
+retrieving revision 1.3
+diff -r1.3 osc.c
+59c59
+< PRIVATE SAMPLE sample_table[OSC_NUM_KINDS][SAMPLE_RATE];
+---
+> PRIVATE SAMPLE *sample_table[OSC_NUM_KINDS];
+66a67,69
+>   for( i=0; i<OSC_NUM_KINDS; i++ )
+>       sample_table[i] = safe_malloc( sizeof(SAMPLE) * SAMPLE_RATE );
+> 
+Index: plugins/powerspectrum.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/powerspectrum.c,v
+retrieving revision 1.2
+diff -r1.2 powerspectrum.c
+85,86c85
+<   // TODO: make this alloca...
+<   out = safe_malloc( sizeof( SAMPLE ) * (len/2+1) );
+---
+>   out = g_alloca( sizeof( SAMPLE ) * (len/2+1) );
+94d92
+<   //rfftw_one( data->plan, event->d.array.numbers, out );
+104,105d101
+< 
+<   free(out);
+Index: plugins/sampler.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/sampler.c,v
+retrieving revision 1.8
+diff -r1.8 sampler.c
+44a45
+> #include <glib.h>
+110c111
+< 		buf    = safe_malloc(bufbytes);
+---
+> 		buf    = g_alloca(bufbytes);
+138d138
+< 		free(buf);
+201c201
+<       for( i=0; i<data->xsize; i++ ) {
+---
+>       for( i=0; i<data->xsize * SAMPLE_RATE; i++ ) {
+348a349
+> 
+350a352
+> 
+468c470
+<   memcpy( data->samplebuf, event->d.array.numbers, event->d.array.len*sizeof( gdouble )  );
+---
+>   memcpy( data->samplebuf, event->d.array.numbers, event->d.array.len*sizeof( SAMPLE )  );
+Index: plugins/scope.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/scope.c,v
+retrieving revision 1.4
+diff -r1.4 scope.c
+31,32d30
+<  *  - display n*SAMPLE_RATE samples
+<  *  - trigger
+35a34,35
+>  
+> /* 2006-11-17 resize via properties of scope added by Nicolai Lissner <nlissne@linux01.gwdg.de> */
+50a51
+> #include "msgbox.h"
+74a76,77
+>   gint32 width; /* the size of the scope in pixels */
+>   gint32 height;
+141a145,146
+>   data->width = 120;
+>   data->height = 90;
+163a169,170
+>   data->width = objectstore_item_get_integer(item, "scope_width", 120);
+>   data->height = objectstore_item_get_integer(item, "scope_height", 90);
+173a181,187
+>   objectstore_item_set_integer(item, "scope_width", data->width);
+>   objectstore_item_set_integer(item, "scope_height", data->height);
+> }
+> PRIVATE void scope_update_pixelsize(Control *c) {
+>   Data *data= c->g->data;
+>   if (c->desc->kind == CONTROL_KIND_USERDEF)
+>     gtk_widget_set_usize( c->widget, data->width, data->height ); 
+180d193
+< 
+183a197
+> 	scope_update_pixelsize(control);
+249a264,302
+> PRIVATE GtkWidget *build_entry(GtkWidget *vbox, char *text, gdouble value) {
+>   GtkWidget *hbox = gtk_hbox_new(FALSE, 2);
+>   GtkWidget *label = gtk_label_new(text);
+>   GtkWidget *entry = gtk_entry_new();
+>   char buf[128];
+> 
+>   gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+>   gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+>   gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+>   gtk_widget_show(label);
+>   gtk_widget_show(entry);
+>   gtk_widget_show(hbox);
+> 
+>   sprintf(buf, "%g", value);
+>   gtk_entry_set_text(GTK_ENTRY(entry), buf);
+> 
+>   return entry;
+> }
+> 
+>           
+> 
+> PRIVATE void props(Component *c, Generator *g) {
+>   Data *data = g->data;
+>   GtkWidget *width, *height;
+>   GtkWidget *vbox;
+> 
+>   vbox = gtk_vbox_new(FALSE, 2);
+> 
+>   width = build_entry(vbox, "width in pixels:", data->width);
+>   height = build_entry(vbox, "height in pixels:", data->height);
+> 
+>   if (popup_dialog(g->name, MSGBOX_OK | MSGBOX_CANCEL, 0, MSGBOX_OK, vbox, NULL, 0) == MSGBOX_OK) {
+>     data->width = atoi(gtk_entry_get_text(GTK_ENTRY(width)));
+>     data->height = atoi(gtk_entry_get_text(GTK_ENTRY(height)));
+>     g_list_foreach(g->controls, (GFunc) scope_update_pixelsize, NULL );                
+>   }
+> }
+> 
+> 
+264c317
+< 				  NULL);
+---
+> 				  props);
+Index: plugins/sndfile_out.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/sndfile_out.c,v
+retrieving revision 1.3
+diff -r1.3 sndfile_out.c
+45a46
+> #define EVT_NAME		1
+178,180c179
+< PRIVATE void evt_record_handler(Generator *g, AEvent *event) {
+<   gboolean start = (event->d.number > 0.5);
+<   Data *data = g->data;
+---
+> PRIVATE void evt_name_handler( Generator *g, AEvent *event ) {
+182,183c181,185
+<   if (start) {
+<     GtkWidget *fs = gtk_file_selection_new("Select Output WAV File");
+---
+>     Data *data = g->data;
+>     if( event->kind != AE_STRING ) {
+> 	g_warning( "not a string event when setting name !!!" );
+> 	return;
+>     }
+185,199c187,221
+<     gtk_object_set_data(GTK_OBJECT(fs), "Generator", g);
+<     gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button), "clicked",
+< 		       GTK_SIGNAL_FUNC(access_output_file), fs);
+<     gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION(fs)->cancel_button), "clicked",
+< 			      GTK_SIGNAL_FUNC(gtk_widget_destroy), GTK_OBJECT(fs));
+< 
+<     if (data->filename != NULL)
+<       gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs), data->filename);
+< 
+<     gtk_window_set_modal(GTK_WINDOW(fs), TRUE);
+<     gtk_widget_show(fs);
+<   } else {
+<     if (data->output != NULL) {
+<       sf_close(data->output);
+<       data->output = NULL;
+---
+>     	    if( data->filename )
+> 	    	g_free( data->filename );
+> 	    data->filename = safe_string_dup( event->d.string );
+> }
+> 
+> PRIVATE void evt_record_handler(Generator *g, AEvent *event) {
+>     gboolean start = (event->d.number > 0.5);
+>     Data *data = g->data;
+>     FILE *f;
+> 
+>     if (start) {
+> 
+> 	f = fopen(data->filename, "rb");
+> 
+> 	data->output = sf_open( data->filename, SFM_WRITE, &data->setup );
+> 	data->frames_recorded = 0;
+> 
+> 	//    GtkWidget *fs = gtk_file_selection_new("Select Output WAV File");
+> 
+> 	//    gtk_object_set_data(GTK_OBJECT(fs), "Generator", g);
+> 	//    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button), "clicked",
+> 	//		       GTK_SIGNAL_FUNC(access_output_file), fs);
+> 	//    gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION(fs)->cancel_button), "clicked",
+> 	//			      GTK_SIGNAL_FUNC(gtk_widget_destroy), GTK_OBJECT(fs));
+> 
+> 	//    if (data->filename != NULL)
+> 	//      gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs), data->filename);
+> 
+> 	//    gtk_window_set_modal(GTK_WINDOW(fs), TRUE);
+> 	//    gtk_widget_show(fs);
+>     } else {
+> 	if (data->output != NULL) {
+> 	    sf_close(data->output);
+> 	    data->output = NULL;
+> 	}
+202,207c224,229
+<     popup_msgbox("Recording Complete", MSGBOX_OK, 0, MSGBOX_OK,
+< 		 "Recorded %g seconds (%d frames) of data to file\n"
+< 		 "%s",
+< 		 (float) data->frames_recorded / (SAMPLE_RATE), data->frames_recorded,
+< 		 data->filename ? data->filename : "<anonymous>");
+<   }
+---
+> 	//   popup_msgbox("Recording Complete", MSGBOX_OK, 0, MSGBOX_OK,
+> 	//		 "Recorded %g seconds (%d frames) of data to file\n"
+> 	//		 "%s",
+> 	//		 (float) data->frames_recorded / (SAMPLE_RATE), data->frames_recorded,
+> 	//		 data->filename ? data->filename : "<anonymous>");
+> 	//  }
+228c250
+<   GeneratorClass *k = gen_new_generatorclass(GENERATOR_CLASS_NAME, TRUE, 1, 0,
+---
+>   GeneratorClass *k = gen_new_generatorclass(GENERATOR_CLASS_NAME, TRUE, 2, 0,
+233a256
+>   gen_configure_event_input(k, EVT_NAME, "NAME", evt_name_handler);
+Index: plugins/vco.c
+===================================================================
+RCS file: /cvsroot/galan/galan/plugins/vco.c,v
+retrieving revision 1.4
+diff -r1.4 vco.c
+59c59
+< PRIVATE SAMPLE sample_table[OSC_NUM_KINDS][SAMPLE_RATE];
+---
+> PRIVATE SAMPLE *sample_table[OSC_NUM_KINDS];
+66a67,69
+>   for( i=0; i<OSC_NUM_KINDS; i++ )
+>       sample_table[i] = safe_malloc( sizeof(SAMPLE) * SAMPLE_RATE );
+> 
+Index: src/Makefile.am
+===================================================================
+RCS file: /cvsroot/galan/galan/src/Makefile.am,v
+retrieving revision 1.8
+diff -r1.8 Makefile.am
+13c13,14
+< libgalan_la_LIBADD = @GTK_LIBS@ @GTHREAD_LIBS@ 
+---
+> libgalan_la_LIBADD = @GTK_LIBS@ @GTHREAD_LIBS@ @GMODULE_LIBS@ @JACK_LIBS@ @LASH_LIBS@ 
+> libgalan_la_LDFLAGS = -no-undefined
+17c18
+< 		iscomp.c shcomp.c cocomp.c
+---
+> 		iscomp.c shcomp.c cocomp.c jack.c lash.c
+20c21
+< galan_LDADD = @GTK_LIBS@ @GTHREAD_LIBS@ libgalan.la
+---
+> galan_LDADD = @GTK_LIBS@ @GTHREAD_LIBS@ @GMODULE_LIBS@ @JACK_LIBS@ @LASH_LIBS@ libgalan.la
+27c28
+< INCLUDES = -I.. -I$(srcdir)/../include @GTK_CFLAGS@ @GTHREAD_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\" -DSITE_PKGDATA_DIR=\"$(pkgdatadir)\"
+---
+> INCLUDES = -I.. -I$(srcdir)/../include @JACK_CFLAGS@ @GTK_CFLAGS@ @GTHREAD_CFLAGS@ @GMODULE_CFLAGS@ @LASH_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\" -DSITE_PKGDATA_DIR=\"$(pkgdatadir)\"
+Index: src/cocomp.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/cocomp.c,v
+retrieving revision 1.2
+diff -r1.2 cocomp.c
+111a112,113
+> 
+>     return clone;
+Index: src/comp.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/comp.c,v
+retrieving revision 1.12
+diff -r1.12 comp.c
+355,357c355,359
+<       gdk_draw_line(drawable, style->white_gc,
+< 		    con->x + c->x, con->y + c->y,
+< 		    other->x + other->ref.c->x, other->y + other->ref.c->y);
+---
+>       if( other != NULL ) {
+> 	  gdk_draw_line(drawable, style->white_gc,
+> 		  con->x + c->x, con->y + c->y,
+> 		  other->x + other->ref.c->x, other->y + other->ref.c->y);
+>       }
+Index: src/control.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/control.c,v
+retrieving revision 1.9
+diff -r1.9 control.c
+40c40
+< PRIVATE GtkWidget *control_panel = NULL;
+---
+> PUBLIC GtkWidget *control_panel = NULL;
+133a134,136
+>     if( c->move_callback )
+> 	c->move_callback( c );
+> 
+526a530
+>   c->move_callback = NULL;
+630a635
+>     g_object_set_data( G_OBJECT(c->whole), "Control", c );
+686d690
+< 
+984a989,997
+> PRIVATE void control_invoke_move_callback( GtkWidget *control_widget, gpointer user_data ) {
+>     Control *c = g_object_get_data( G_OBJECT(control_widget), "Control" );
+>     if( c && c->move_callback )
+> 	c->move_callback( c );
+> }
+> 
+> PRIVATE void control_panel_scroll_handler( GtkAdjustment *adjustment, ControlPanel *cp ) {
+>     gtk_container_foreach( GTK_CONTAINER(cp->fixedwidget), control_invoke_move_callback, NULL );
+> }
+993a1007
+> 
+1011a1026,1030
+>     g_signal_connect_after( gtk_layout_get_hadjustment( GTK_LAYOUT( panel->fixedwidget ) ),
+> 	    "value-changed", (GCallback) control_panel_scroll_handler, panel );
+>     g_signal_connect_after( gtk_layout_get_vadjustment( GTK_LAYOUT( panel->fixedwidget ) ),
+> 	    "value-changed", (GCallback) control_panel_scroll_handler, panel );
+> 	    
+1061c1080
+< 		char *bg_in_pixmap_dir = g_build_filename( pixmap_path, bg_basename );
+---
+> 		char *bg_in_pixmap_dir = g_build_filename( pixmap_path, bg_basename, NULL );
+1111,1112c1130
+< PUBLIC void init_control(void) {
+< 
+---
+> PUBLIC void init_control_thread(void) {
+1113a1132,1135
+>   update_thread = g_thread_create( update_processor, NULL, TRUE, &err );
+> }
+> 
+> PUBLIC void init_control(void) {
+1120d1141
+<   update_thread = g_thread_create( update_processor, NULL, TRUE, &err );
+Index: src/galan.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/galan.c,v
+retrieving revision 1.8
+diff -r1.8 galan.c
+38a39,40
+> #include "galan_jack.h"
+> #include "galan_lash.h"
+131a134,135
+>   init_lash( argc, argv );
+>   init_jack();
+144a149,151
+>   
+>   init_generator_thread();
+>   init_control_thread();
+155,166d161
+<   //{
+<   //    gboolean quit = FALSE;
+<   //    while( quit == FALSE ) {
+< //	  while( gtk_events_pending() )
+< //	      gtk_main_iteration();
+< //	  gdk_threads_leave();
+< //	  g_thread_yield();
+< //	  gdk_threads_enter();
+< 	  //g_print( "hello quit=%d\n" , quit );
+< //    }
+< 		  
+< //  }
+168c163
+< gdk_threads_leave();
+---
+>   gdk_threads_leave();
+179a175,176
+>   done_jack();
+>   done_lash();
+Index: src/gencomp.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/gencomp.c,v
+retrieving revision 1.13
+diff -r1.13 gencomp.c
+412c412,421
+<   gdk_draw_text(drawable, gtk_style_get_font(style), gc,
+---
+>   {
+>   PangoLayout *layout = gtk_widget_create_pango_layout( c->sheet->drawingwidget, d->g->name );
+>   gdk_draw_layout(drawable, gc,
+> 		c->x + GENCOMP_BORDER_WIDTH + (GENCOMP_CONNECTOR_WIDTH>>1),
+> 		c->y + GENCOMP_BORDER_WIDTH, 
+> 		layout);
+>   g_object_unref( G_OBJECT( layout ) );
+>   }
+> 
+> /*  gdk_draw_text(drawable, gtk_style_get_font(style), gc,
+415a425
+> 		*/
+706,708c716
+< PUBLIC void gencomp_register_generatorclass(GeneratorClass *k, gboolean prefer,
+< 					    char *menupath, char *iconpath,
+< 					    PropertiesCallback propgen) {
+---
+> PUBLIC void gencomp_register_generatorclass(GeneratorClass *k, gboolean prefer, char *menupath, char *iconpath, PropertiesCallback propgen) {
+Index: src/generator.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/generator.c,v
+retrieving revision 1.13
+diff -r1.13 generator.c
+59a60,64
+> PRIVATE int gen_samplerate = 44100;
+> 
+> PUBLIC int gen_get_sample_rate( void ) {
+>     return gen_samplerate;
+> }
+309c314
+<   g->last_sampletime = 0;
+---
+>   g->last_sampletime = safe_calloc( k->out_sig_count, sizeof( SAMPLETIME) );
+400,407d404
+< 	if (g->klass->destroy_instance != NULL)
+< 	    g->klass->destroy_instance(g);
+< 
+< 
+< 	for (i = 0; i < g->klass->out_sig_count; i++)
+< 	    if (g->last_buffers[i] != NULL)
+< 		safe_free(g->last_buffers[i]);
+< 
+421a419,426
+> 	if (g->klass->destroy_instance != NULL)
+> 	    g->klass->destroy_instance(g);
+> 
+> 
+> 	for (i = 0; i < g->klass->out_sig_count; i++)
+> 	    if (g->last_buffers[i] != NULL)
+> 		safe_free(g->last_buffers[i]);
+> 
+508c513,514
+<     g->last_sampletime = 0;
+---
+> 
+>     g->last_sampletime = safe_calloc( k->out_sig_count, sizeof( SAMPLETIME) );
+988c994
+<     if (g->last_buffers[index] == NULL || g->last_sampletime < gen_get_sampletime()) {
+---
+>     if (g->last_buffers[index] == NULL || g->last_sampletime[index] < gen_get_sampletime()) {
+1004c1010
+<       g->last_sampletime = gen_get_sampletime();
+---
+>       g->last_sampletime[index] = gen_get_sampletime();
+1267a1274,1277
+>   { "Input9", SIG_FLAG_REALTIME },
+>   { "Input10", SIG_FLAG_REALTIME },
+>   { "Input11", SIG_FLAG_REALTIME },
+>   { "Input12", SIG_FLAG_REALTIME },
+1280a1291,1294
+>   { "Output9", SIG_FLAG_REALTIME, { dummy_output_generator, } },
+>   { "Output10", SIG_FLAG_REALTIME, { dummy_output_generator, } },
+>   { "Output11", SIG_FLAG_REALTIME, { dummy_output_generator, } },
+>   { "Output12", SIG_FLAG_REALTIME, { dummy_output_generator, } },
+1333c1347
+< 	    20, 20,
+---
+> 	    120, 120,
+1339c1353
+<     for( i=0; i<20; i++ ) {
+---
+>     for( i=0; i<120; i++ ) {
+1349c1363
+< PUBLIC void init_generator(void) {
+---
+> PUBLIC void init_generator_thread(void) {
+1351a1366,1370
+>     kill_thread = g_thread_create( (GThreadFunc) gen_kill_generator_stage2_thread, NULL, TRUE, &err );
+> }
+> PUBLIC void init_generator(void) {
+> 
+>     gen_samplerate = jack_get_sample_rate( galan_jack_get_client() );
+1358d1376
+<     kill_thread = g_thread_create( (GThreadFunc) gen_kill_generator_stage2_thread, NULL, TRUE, &err );
+Index: src/gui.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/gui.c,v
+retrieving revision 1.11
+diff -r1.11 gui.c
+284,285c284,285
+< PRIVATE GFunc *edit_func[] = { (GFunc *) edit_delete_comp,
+< 			       (GFunc *) edit_clone_comp   };
+---
+> PRIVATE GFunc edit_func[] = { (GFunc) edit_delete_comp,
+> 			       (GFunc) edit_clone_comp   };
+290c290
+<     g_list_foreach( sheet->selected_comps, edit_func[action], NULL );
+---
+>     g_list_foreach( sheet->selected_comps, (edit_func[action]), NULL );
+Index: src/iscomp.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/iscomp.c,v
+retrieving revision 1.7
+diff -r1.7 iscomp.c
+204a205
+>     ISCompData *clonedata;
+210a212,215
+>     clonedata = clone->data;
+>     g_free( clonedata->name );
+> 	clonedata->name = safe_string_dup( srcdata->name );
+>     
+224,225c229
+< PRIVATE void iscomp_paint(Component *c, GdkRectangle *area,
+< 			   GdkDrawable *drawable, GtkStyle *style, GdkColor *colors) {
+---
+> PRIVATE void iscomp_paint(Component *c, GdkRectangle *area, GdkDrawable *drawable, GtkStyle *style, GdkColor *colors) {
+351,352c355,367
+< PRIVATE gboolean iscomp_accept_outbound(Component *c, ConnectorReference *src,
+< 					 ConnectorReference *dst) {
+---
+> 
+> 
+> /**
+>  * \brief tries to establich a connection between \a src and \a dst.
+>  *
+>  * Note that galan graphs are directed.
+>  *
+>  * \param c The component with the source connector.
+>  * \param src from ConnectorReference.
+>  * \param dst to ConnectorReference.
+>  */
+> 
+> PRIVATE gboolean iscomp_accept_outbound(Component *c, ConnectorReference *src, ConnectorReference *dst) {
+363,364c378
+< PRIVATE gboolean iscomp_accept_inbound(Component *c, ConnectorReference *src,
+< 					ConnectorReference *dst) {
+---
+> PRIVATE gboolean iscomp_accept_inbound(Component *c, ConnectorReference *src, ConnectorReference *dst) {
+Index: src/objectstore.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/objectstore.c,v
+retrieving revision 1.7
+diff -r1.7 objectstore.c
+851a852
+>   RETURN_VAL_UNLESS(array, NULL);
+Index: src/plugin.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/plugin.c,v
+retrieving revision 1.3
+diff -r1.3 plugin.c
+65c65
+<   if (!g_module_symbol(handle, initstr, (gpointer *) &initializer)) {
+---
+>   if (!g_module_symbol(handle, initstr, (gpointer *) &initializer) ) {
+88c88
+< #ifdef NATIVE_WIN32
+---
+> #ifdef G_OS_WIN32
+Index: src/prefs.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/prefs.c,v
+retrieving revision 1.5
+diff -r1.5 prefs.c
+295c295
+< #if NATIVE_WIN32
+---
+> #ifdef G_OS_WIN32
+Index: src/sample-display.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/sample-display.c,v
+retrieving revision 1.2
+diff -r1.2 sample-display.c
+25a26,27
+> #include <string.h>
+> 
+94a97
+>     gboolean len_changed = ( s->datalen != len );
+126,134c129,139
+<     s->win_start = 0;
+<     s->win_length = len;
+<     gtk_signal_emit(GTK_OBJECT(s), sample_display_signals[SIG_WINDOW_CHANGED], s->win_start, s->win_start + s->win_length);
+< 	
+<     s->sel_start = -1;
+<     s->old_ss = s->old_se = -1;
+<     s->selecting = 0;
+<     
+<     s->loop_start = -1;
+---
+>     if( len_changed ) {
+> 	s->win_start = 0;
+> 	s->win_length = len;
+> 	gtk_signal_emit(GTK_OBJECT(s), sample_display_signals[SIG_WINDOW_CHANGED], s->win_start, s->win_start + s->win_length);
+> 
+> 	s->sel_start = -1;
+> 	s->old_ss = s->old_se = -1;
+> 	s->selecting = 0;
+> 
+> 	s->loop_start = -1;
+>     }
+355,356c360,361
+< 			  x - 1, ((c + 32768) * sh) >> 16,
+< 			  x,     ((d + 32768) * sh) >> 16);
+---
+> 			  x - 1, ((32768 - c) * sh) >> 16,
+> 			  x,     ((32768 - d) * sh) >> 16);
+367,368c372,373
+< 			  x - 1, ((c + 128) * sh) >> 8,
+< 			  x,     ((d + 128) * sh) >> 8);
+---
+> 			  x - 1, ((128 - c) * sh) >> 8,
+> 			  x,     ((128 - d) * sh) >> 8);
+Index: src/shcomp.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/shcomp.c,v
+retrieving revision 1.13
+diff -r1.13 shcomp.c
+125a126,131
+> /**
+>  * make InterSheetLinks ->  list<list< Components >>.
+>  * but why ? 
+>  * what are the components for ?
+>  */
+> 
+202a209
+> 
+204a212
+> 
+240a249
+> 
+241a251
+> 
+243a254
+>       
+250d260
+< 
+251a262
+> 
+773,774c784,785
+<     DIR *d = opendir(dir);
+<     struct dirent *de;
+---
+>     GDir *d = g_dir_open(dir, 0, NULL);
+>     char *filename;
+780c791
+<     while ((de = readdir(d)) != NULL) {
+---
+>     while ((filename = g_dir_read_name(d)) != NULL) {
+783,787c794
+< 	if (de->d_name[0] == '.')
+< 	    /* Don't load 'hidden' files or directories */
+< 	    continue;
+< 
+< 	fullname = g_strdup_printf( "%s%s%s", dir, G_DIR_SEPARATOR_S, de->d_name ); 
+---
+> 	fullname = g_strdup_printf( "%s%s%s", dir, G_DIR_SEPARATOR_S, filename ); 
+789,790c796,797
+< 	if (check_gsheet_validity(fullname, menupos, de->d_name)) {
+< 	    char *menuname = g_strdup_printf( "%s/%s", menupos, de->d_name );
+---
+> 	if (check_gsheet_validity(fullname, menupos, filename)) {
+> 	    char *menuname = g_strdup_printf( "%s/%s", menupos, filename );
+798c805
+<     closedir(d);
+---
+>     g_dir_close(d);
+Index: src/sheet.c
+===================================================================
+RCS file: /cvsroot/galan/galan/src/sheet.c,v
+retrieving revision 1.17
+diff -r1.17 sheet.c
+1094a1095
+>     ControlPanel *cp;
+1100c1101
+<     ControlPanel *cp = clone->control_panel = control_panel_new( clone->name, TRUE, clone );
+---
+>     cp = clone->control_panel = control_panel_new( clone->name, TRUE, clone );
+1102a1104
+> 
+1105c1107,1108
+< 	control_update_bg( sheet->panel_control );
+---
+> 	if( clone->panel_control_active )
+> 	    control_update_bg( clone->panel_control );
