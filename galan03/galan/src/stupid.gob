@@ -1,0 +1,77 @@
+
+
+
+
+
+
+
+	private GtkTreePath *loooookup( self, char *path ) {
+
+		GtkTreeModel *model = GTK_TREE_MODEL( self );
+
+		if( !strcmp( path, "/" ) ) {
+			return gtk_tree_path_new_first();
+		}
+
+		char *updir = g_path_get_dirname( path );
+		GtkTreePath *treepath = self_lookup( self, updir );
+		free(updir);
+
+		if( treepath ) {
+			gtk_tree_path_down( treepath );
+			GtkTreeIter chiter;
+			if( gtk_tree_model_get_iter( model, &chiter, treepath ) ) {
+
+				char *base = g_path_get_basename( path );
+				do {
+					char *name;
+					gtk_tree_model_get( model, &chiter, 0, &name );
+					if( !strcmp( name, base ) ) {
+						*iter = chiter;
+						free( name );
+						free( base );
+						return treepath;
+					}
+					free(name);
+					gtk_tree_path_next( treepath );
+				} while( gtk_tree_model_iter_next( model, &chiter ) );
+			}
+		}
+		free( base  );
+		gtk_tree_path_free( treepath );
+		return NULL;
+	}
+
+	private GtkTreePath *ensure_path_exists( self, char *mpath ) {
+
+		GtkTreeModel *model = GTK_TREE_MODEL( self );
+
+		if( !strcmp( mpath, "" ) ) {
+			return gtk_tree_path_new_first();
+		}
+
+		GtkTreePath *treepath = self_lookup( self, mpath );
+
+		if( treepath == NULL ) {
+			char *updir = g_path_get_dirname( mpath );
+			char *aname = g_path_get_basename( mpath );
+			treepath = self_ensure_path_exists( self, updir );
+
+			//TODO: Add a node with aname below treepath;
+
+			GtkAction *tmpact = gtk_action_new( aname, aname, NULL, NULL );
+			gtk_action_group_add_action( component_actiongroup, tmpact );
+
+			gtk_ui_manager_add_ui( ui_manager, 
+					gtk_ui_manager_new_merge_id( ui_manager ),
+					updir,
+					aname,
+					g_strdup(aname),
+					GTK_UI_MANAGER_MENU,
+					TRUE );
+
+			//free( aname );
+			//free( updir );
+		}
+	}
+

@@ -1,0 +1,28 @@
+
+
+
+class Galan:CompAction from Gtk:Action {
+
+	public ComponentClass *klass;
+	public gpointer init_data;
+
+	property POINTER klass
+		(nick  = "klass",
+		 blurb = "ComponentClass *",
+		 flags = CONSTRUCT_ONLY,
+		 link );
+
+	property POINTER init_data
+		(nick  = "id",
+		 blurb = "InitData gpointer",
+		 flags = CONSTRUCT_ONLY,
+		 link );
+
+
+	override (Gtk:Action) void activate( Gtk:Action *self ) {
+
+		Self  *ich = self;
+    	Sheet *s = gui_get_active_sheet();
+    	sheet_build_new_component( s, ich->klass, ich->init_data );
+	}
+}
